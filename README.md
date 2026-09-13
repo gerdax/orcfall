@@ -122,3 +122,6 @@ Rycerze i włócznicy atakują pobliskich przeciwników wręcz, a łucznicy strz
 
 ### Obozy w dziczy
 Poza wioskami, rzekami i traktami pojawiają się obozy z dwoma namiotami, ogniskiem i zapasami. Każdy zamieszkują dwa zwykłe orki, trzy gobliny i wielki ork: przywódca ma 10 punktów zdrowia i zadaje 2 punkty obrażeń. Pokonani mieszkańcy obozu nie odradzają się podczas tej samej wyprawy.
+
+### Rybacy
+Przy chatach rybackich pojawiają się przyjaźni rybacy na wolnym brzegu rzeki. Łowią wędką, mają spławik i wiadro, a co kilka sekund pokazują złowioną rybę. Nie można ich zranić mieczem bohatera.
