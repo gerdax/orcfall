@@ -1,3 +1,4 @@
+import {enemyXP} from './progression.js';
 import {makeFisherman,drawFisherman} from './fishermen.js';
 import {drawChief} from './camps.js?v=0.10.2';
 import {GuardCombat,isGuard} from './guard-combat.js';
@@ -76,13 +77,13 @@ export class Population{
    if(Math.hypot(dx,dy)>3){a.dir=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';a.moving=moveActor(a,dx,dy,dt,a.raid?this.raidWorld.region(a.x-32,a.y-32,a.x+32,a.y+32).flatMap(c=>c.objects):a.patrolObstacles??objects,null,null,hostile?(a.type==='goblin'?45:36):a.type==='human'?13:17)}
   }
  }
- damageOrc(a,time){
+ damageOrc(a,time,amount=1){
   if(!['orc','goblin'].includes(a.type)||!this.actors.has(a.id))return false;
-  a.hp--;a.flash=time+.18;a.windup=0;a.cooldown=.5;
+  a.hp-=amount;a.flash=time+.18;a.windup=0;a.cooldown=.5;
   if(a.hp>0)return false;
   this.corpses.push({...a,expiresAt:time+10});this.actors.delete(a.id);this.defeated.add(a.id);return true;
  }
- strike(hero,angle,objects,time){let hits=0,kills=0;for(const [id,a] of this.actors){if(!['orc','goblin'].includes(a.type))continue;const d=Math.hypot(a.x-hero.x,a.y-hero.y),dir=Math.atan2(a.y-hero.y,a.x-hero.x)-angle;if(d<30&&(d<12||Math.cos(dir)>Math.cos(1.25))&&clearLine(hero,a,objects)){hits++;if(this.damageOrc(a,time))kills++}}return {hits,kills}}
+ strike(hero,angle,objects,time){let hits=0,kills=0,xp=0;for(const [id,a] of this.actors){if(!['orc','goblin'].includes(a.type))continue;const d=Math.hypot(a.x-hero.x,a.y-hero.y),dir=Math.atan2(a.y-hero.y,a.x-hero.x)-angle;if(d<30&&(d<12||Math.cos(dir)>Math.cos(1.25))&&clearLine(hero,a,objects)){hits++;if(this.damageOrc(a,time,hero.damage??1)){kills++;xp+=enemyXP(a)}}}return {hits,kills,xp}}
 }
 const HUMAN=['................','......oooo......','.....ohhhho.....','.....ohHHho.....','.....osssso.....','.....osSsso.....','......osso......','....ooccccoo....','...osccccccso...','...osccccccso...','....occcccco....','.....obbbbo.....','.....oboboo.....','.....oo.oo......','................','................'];
 const GOBLIN=['................','................','.....oooo.......','..oogGGGgoo.....','..ogGGGGGggo....','...ogYgYgo......','....oggggo......','....oWgWo.......','...ootttoo......','...ogtttgo......','....otttto......','.....obbo.......','.....oooo.......','................','................','................'];

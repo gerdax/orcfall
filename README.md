@@ -128,3 +128,6 @@ Przy chatach rybackich pojawiają się przyjaźni rybacy na wolnym brzegu rzeki.
 
 ### Wieża wodza
 Każda wioska otrzymuje jedną szarą murowaną wieżę wodza z widocznymi warstwami cegieł, blankami, chorągwią i drewnianymi drzwiami. Budynek ma kolizję i znacznik na minimapie; nie ma jeszcze dostępnego wnętrza. Zamki zachowują istniejący donżon.
+
+### Poziomy bohatera
+Osobiste pokonanie goblina daje 10 PD, orka 20 PD, wodza 60 PD; runa daje 15 PD. Pierwszy awans wymaga 40 PD, każdy następny próg rośnie o 25. Awans dodaje punkt maksymalnego zdrowia i leczy do pełna; co trzy awanse rośnie siła miecza. Poziom i pasek doświadczenia są w HUD. Odrodzenie zachowuje postęp, restart lub odświeżenie strony go zeruje. Zabójstwa dokonane przez strażników i wieże nie dają bohaterowi PD.
