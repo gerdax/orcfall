@@ -1,3 +1,4 @@
+import {drawChiefTower} from './chief-tower.js';
 import {drawCamp} from './camps.js?v=0.10.2';
 import {drawWatchtower} from './watchtowers.js';
 import {drawPalisade} from './palisades.js?v=0.8.1';
@@ -127,6 +128,7 @@ export function isSettlementObject(o){return !['tree','rock'].includes(o.type)}
 const buildingCache=new Map();
 export function drawSettlement(ctx,o,time=0){
  if(o.type.startsWith('camp-')){drawCamp(ctx,o,time);return}
+ if(o.type==='chief-tower'){drawChiefTower(ctx,o);return}
  if(o.type==='watchtower'){drawWatchtower(ctx,o);return}
  if(o.type.startsWith('palisade')){drawPalisade(ctx,o);return}
  if(o.sourceW===undefined){drawSettlementShape(ctx,o,time);return;}

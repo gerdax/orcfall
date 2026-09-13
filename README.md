@@ -125,3 +125,6 @@ Poza wioskami, rzekami i traktami pojawiają się obozy z jednym, dwoma lub trze
 
 ### Rybacy
 Przy chatach rybackich pojawiają się przyjaźni rybacy na wolnym brzegu rzeki. Łowią wędką, mają spławik i wiadro, a co kilka sekund pokazują złowioną rybę. Nie można ich zranić mieczem bohatera.
+
+### Wieża wodza
+Każda wioska otrzymuje jedną szarą murowaną wieżę wodza z widocznymi warstwami cegieł, blankami, chorągwią i drewnianymi drzwiami. Budynek ma kolizję i znacznik na minimapie; nie ma jeszcze dostępnego wnętrza. Zamki zachowują istniejący donżon.

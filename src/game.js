@@ -4,8 +4,8 @@ import {healAtWell} from './healing.js';
 import {Population,drawPerson,drawCorpse} from './population.js?v=0.10.2';
 import {drawCastle} from './castles.js';
 import {drawScenery} from './scenery.js';
-import {drawSettlement,isSettlementObject} from './settlements.js?v=0.10.0';
-import {World,CHUNK_SIZE,DEFAULT_SEED} from './world.js?v=0.10.2';
+import {drawSettlement,isSettlementObject} from './settlements.js?v=0.10.3';
+import {World,CHUNK_SIZE,DEFAULT_SEED} from './world.js?v=0.10.3';
 import {terrainSurface} from './terrain.js';
 import {drawHero,moveActor} from './hero.js';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
@@ -80,7 +80,7 @@ function drawMinimap(){
   m.fillStyle=s.river==='water'?'#396f7e':s.river==='bridge'?'#ad915e':s.path<16?'#655638':s.forest>.52?'#263c24':'#45572e';m.fillRect(x,y,2,2);
  }
  for(const t of world.townsIn(left,top,left+640,top+640))for(const o of t.objects){
-  if(!['house','inn','stable','castle-keep','castle-tower','watchtower'].includes(o.type))continue;
+  if(!['house','inn','stable','castle-keep','castle-tower','watchtower','chief-tower'].includes(o.type))continue;
   m.fillStyle=t.kind==='castle'?'#dcc389':'#94704b';m.fillRect(Math.round((o.x-left)/8)-2,Math.round((o.y-top)/8)-2,4,3);
  }
  for(const a of population.actors.values()){m.fillStyle=['orc','goblin'].includes(a.type)?'#d55d40':a.type==='merchant'?'#e1b75a':['knight','archer','spearman'].includes(a.type)?'#a4bfdc':'#cfcd94';m.fillRect(Math.round((a.x-left)/8),Math.round((a.y-top)/8),2,2)}
