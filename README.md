@@ -119,3 +119,6 @@ Każda wioska ma po pięciu łuczników i włóczników, oprócz pięciu rycerzy
 
 ### Walczące patrole i gobliny
 Rycerze i włócznicy atakują pobliskich przeciwników wręcz, a łucznicy strzelają widocznymi strzałami. Po walce wracają na posterunki. W dziczy występują też mniejsze gobliny: mają 2 punkty zdrowia i są szybsze od orków. Wieże i żołnierze reagują na oba rodzaje przeciwników. Nocne fale liczą 13 orków.
+
+### Obozy w dziczy
+Poza wioskami, rzekami i traktami pojawiają się obozy z dwoma namiotami, ogniskiem i zapasami. Każdy zamieszkują dwa zwykłe orki, trzy gobliny i wielki ork: przywódca ma 10 punktów zdrowia i zadaje 2 punkty obrażeń. Pokonani mieszkańcy obozu nie odradzają się podczas tej samej wyprawy.

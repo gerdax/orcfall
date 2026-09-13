@@ -1,8 +1,9 @@
+import {campsIn,campObjects,campResidents} from './camps.js';
 import {addWatchtowers} from './watchtowers.js';
 import {addPalisade} from './palisades.js?v=0.8.1';
 import {riverGround,fishingHuts,fieldAt} from './countryside.js';
 import {makeCastle,CASTLE_CHANCE} from './castles.js';
-import {makeTown,TOWN_SPACING} from './settlements.js?v=0.9.3';
+import {makeTown,TOWN_SPACING} from './settlements.js?v=0.10.0';
 // All generation depends only on global coordinates and the world seed.
 // Chunk order, cache eviction and exploration history cannot change terrain.
 export const CHUNK_SIZE = 128;
@@ -86,6 +87,8 @@ export class World {
   }
   generateChunk(cx, cy) {
     const objects = [], runes = [], x0 = cx * CHUNK_SIZE, y0 = cy * CHUNK_SIZE;
+    const camps=campsIn(this,x0,y0,x0+128,y0+128);
+    for(const camp of camps)for(const o of campObjects(camp))if(Math.floor(o.x/128)===cx&&Math.floor(o.y/128)===cy)objects.push(o);
     const huts=fishingHuts(this,x0-40,y0-40,x0+CHUNK_SIZE+40,y0+CHUNK_SIZE+40);
     for(let y=y0;y<y0+CHUNK_SIZE;y+=8)for(let x=x0;x<x0+CHUNK_SIZE;x+=8)
       if(riverGround(this,x,y)==='water')objects.push({type:'river-water',x:x+4,y:y+4,w:8,h:8});
@@ -97,7 +100,7 @@ export class World {
         const py = y + 8 + hash(gx, gy, this.seed + 2) * 16;
         const town=this.townAt(px,py);
         const occupied=(town?.kind==='castle'&&Math.abs(px-town.x)<145&&Math.abs(py-town.y)<135)||town?.objects.some(o=>Math.abs(o.x-px)<(o.w??16)/2+22&&Math.abs(o.y-py)<(o.h??16)/2+30);
-        if (riverGround(this,px,py)||fieldAt(this,px,py)||huts.some(o=>Math.abs(px-o.x)<40&&Math.abs(py-o.y)<45)||occupied || Math.hypot(px, py) < 75 || this.pathDistance(px, py) < 31) continue;
+        if (camps.some(c=>Math.abs(px-c.x)<85&&Math.abs(py-c.y)<85)||riverGround(this,px,py)||fieldAt(this,px,py)||huts.some(o=>Math.abs(px-o.x)<40&&Math.abs(py-o.y)<45)||occupied || Math.hypot(px, py) < 75 || this.pathDistance(px, py) < 31) continue;
         const forest = this.forest(px, py), roll = hash(gx, gy, this.seed + 3);
         if (roll < Math.max(.025, (forest - .27) * 1.45)) {
           objects.push({type:'tree', x:Math.round(px), y:Math.round(py), r:7, variant:hash(gx,gy,this.seed+4)});
@@ -116,7 +119,7 @@ export class World {
     for(const town of this.townsIn(x0,y0,x0+CHUNK_SIZE,y0+CHUNK_SIZE))
       for(const o of town.objects)
         if(Math.floor(o.x/CHUNK_SIZE)===cx&&Math.floor(o.y/CHUNK_SIZE)===cy)objects.push(o);
-    return {cx, cy, x:x0, y:y0, objects, runes, surface:null};
+    return {cx, cy, x:x0, y:y0, objects, runes, campActors:camps.flatMap(campResidents).filter(a=>a.chunk===`${cx}:${cy}`), surface:null};
   }
   getChunk(cx, cy) {
     const key = `${cx}:${cy}`;

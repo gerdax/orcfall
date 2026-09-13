@@ -1,3 +1,4 @@
+import {drawCamp} from './camps.js';
 import {drawWatchtower} from './watchtowers.js';
 import {drawPalisade} from './palisades.js?v=0.8.1';
 import {rotatedBounds,buildingDoor,collides} from './geometry.js';
@@ -125,6 +126,7 @@ export function isSettlementObject(o){return !['tree','rock'].includes(o.type)}
 // Rotation is rasterized once onto the native grid, never CSS/canvas-smoothed.
 const buildingCache=new Map();
 export function drawSettlement(ctx,o,time=0){
+ if(o.type.startsWith('camp-')){drawCamp(ctx,o,time);return}
  if(o.type==='watchtower'){drawWatchtower(ctx,o);return}
  if(o.type.startsWith('palisade')){drawPalisade(ctx,o);return}
  if(o.sourceW===undefined){drawSettlementShape(ctx,o,time);return;}
