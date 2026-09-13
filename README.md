@@ -101,3 +101,6 @@ Pliki robocze w `work/`, logi i pliki `.env` nie są wersjonowane.
 
 ### Rycerze w osadach
 Każda wioska ma pięciu przyjaznych rycerzy w stalowych zbrojach, z tarczami i mieczami. Patrolują krótkie odcinki wokół swoich posterunków, respektują budynki i ogrodzenia. Nie można zranić ich mieczem bohatera. Na minimapie mają jasnoniebieskie znaczniki. Nie prowadzą jeszcze walki z orkami.
+
+### Kupcy
+W osadach kupcy jadą konnymi wozami z płóciennym zadaszeniem i towarem. Kursują po bezpiecznym odcinku drogi, zatrzymują się na końcach i zawracają. Są przyjaźni, a na minimapie mają złoty znacznik. Handel nie jest jeszcze dostępny.
