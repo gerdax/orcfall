@@ -133,4 +133,4 @@ Każda wioska otrzymuje jedną szarą murowaną wieżę wodza z widocznymi warst
 Osobiste pokonanie goblina daje 10 PD, orka 20 PD, wodza 60 PD; runa daje 15 PD. Pierwszy awans wymaga 40 PD, każdy następny próg rośnie o 25. Awans dodaje punkt maksymalnego zdrowia i leczy do pełna; co trzy awanse rośnie siła miecza. Poziom i pasek doświadczenia są w HUD. Odrodzenie zachowuje postęp, restart lub odświeżenie strony go zeruje. Zabójstwa dokonane przez strażników i wieże nie dają bohaterowi PD.
 
 ### Rzadkie miasta
-Około 7% zwykłych osad poza punktem startowym powstaje jako miasto. Miasta mają gęstszą zabudowę (docelowo 12 domów), rynek, zapasy handlowe, palisadę, wieże i standardowe patrole. Początkowa osada pozostaje wioską. Zamki zachowują osobne losowanie.
+Około 7% zwykłych osad poza punktem startowym powstaje jako miasto. Miasta mają gęstszą zabudowę (docelowo 12 domów), rynek, zapasy handlowe, palisadę, wieże i standardowe patrole. Początkowa osada jest zawsze miastem; bohater zaczyna na jego rynku i wraca tam po odrodzeniu. Zamki zachowują osobne losowanie.

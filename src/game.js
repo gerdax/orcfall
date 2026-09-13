@@ -6,7 +6,7 @@ import {Population,drawPerson,drawCorpse} from './population.js?v=0.11.0';
 import {drawCastle} from './castles.js';
 import {drawScenery} from './scenery.js';
 import {drawSettlement,isSettlementObject} from './settlements.js?v=0.12.0';
-import {World,CHUNK_SIZE,DEFAULT_SEED} from './world.js?v=0.12.0';
+import {World,CHUNK_SIZE,DEFAULT_SEED} from './world.js?v=0.12.1';
 import {terrainSurface} from './terrain.js';
 import {drawHero,moveActor} from './hero.js';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
@@ -28,7 +28,7 @@ function reset(seed=world?.seed??DEFAULT_SEED){
   world=new World(seed);population=new Population();hero={x:0,y:0,dir:'down',moving:false,hp:6,maxHp:6,level:1,xp:0,damage:1,hurtUntil:0};
   dummies=[{x:-26,y:64,r:7,flash:0}];particles=[];hits=0;collected=new Set();explored=new Set();distance=0;
   attackUntil=attackCooldown=dashUntil=dashCooldown=0;
-  refreshWorld();notify('Witaj w osadzie. Dalej na szlaku czekają kolejne miasteczka.',6);
+  refreshWorld();notify('Witaj w mieście. Za bramami czeka otwarty świat.',6);
   updateUI();setPause(false);
 }
 function notify(message,duration=3){$('notice').textContent=message;messageTime=time+duration}

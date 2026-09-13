@@ -37,7 +37,7 @@ test('many seeds give distinct layouts with reachable doors and no overlapping b
  const layouts=new Set(),signatures=new Set();
  for(let seed=1;seed<=30;seed++){
   const w=new World(seed),t=w.getTown(0,0),buildings=t.objects.filter(o=>['house','inn','stable'].includes(o.type));
-  assert.ok(buildings.length>=7&&buildings.length<=10);
+  assert.ok(buildings.length>=12&&buildings.length<=14);
   assert.ok(new Set(buildings.map(o=>o.angle)).size>=3);
   assert.ok(buildings.some(o=>o.angle%90!==0));
   layouts.add(t.layout);signatures.add(buildings.map(o=>`${o.x},${o.y},${o.w}`).join('|'));

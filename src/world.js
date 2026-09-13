@@ -46,7 +46,7 @@ export class World {
     if(castle||(gx===0&&gy===0)||hash(gx,gy,this.seed+151)<.72){
       let x=gx*TOWN_SPACING,y=gy*TOWN_SPACING;
       for(let i=0;i<32;i++){x=gx*TOWN_SPACING-this.warp(y);y=gy*TOWN_SPACING-this.warp(x)}
-      town=(castle?makeCastle:makeTown)(gx,gy,Math.round(x),Math.round(y),this.seed,!castle&&(gx!==0||gy!==0)&&hash(gx,gy,this.seed+2301)<.07);
+      town=(castle?makeCastle:makeTown)(gx,gy,Math.round(x),Math.round(y),this.seed,!castle&&((gx===0&&gy===0)||hash(gx,gy,this.seed+2301)<.07));
       addPalisade(town,t=>this.warp(t));
       addChiefTower(town);
       addWatchtowers(town);
@@ -100,7 +100,7 @@ export class World {
         const gx = x / 32, gy = y / 32;
         const px = x + 8 + hash(gx, gy, this.seed + 1) * 16;
         const py = y + 8 + hash(gx, gy, this.seed + 2) * 16;
-        const town=this.townAt(px,py);
+        const town=this.getTown(Math.round(px/TOWN_SPACING),Math.round(py/TOWN_SPACING));
         const occupied=(town?.kind==='castle'&&Math.abs(px-town.x)<145&&Math.abs(py-town.y)<135)||town?.objects.some(o=>Math.abs(o.x-px)<(o.w??16)/2+22&&Math.abs(o.y-py)<(o.h??16)/2+30);
         if (camps.some(c=>Math.abs(px-c.x)<85&&Math.abs(py-c.y)<85)||riverGround(this,px,py)||fieldAt(this,px,py)||huts.some(o=>Math.abs(px-o.x)<40&&Math.abs(py-o.y)<45)||occupied || Math.hypot(px, py) < 75 || this.pathDistance(px, py) < 31) continue;
         const forest = this.forest(px, py), roll = hash(gx, gy, this.seed + 3);
