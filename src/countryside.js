@@ -1,4 +1,4 @@
-import {hash} from './world.js';
+import {hash} from './world.js?v=0.9.3';
 export function riverCenter(world,x,y){const band=Math.round((x-640)/1280);return band*1280+640+Math.sin(y/210+world.seed%17)*43+Math.sin(y/530)*26}
 // Shared eight-pixel shoreline cells keep water rendering and collision identical.
 export function riverGround(world,x,y){

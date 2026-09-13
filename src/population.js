@@ -1,6 +1,6 @@
 import {makeMerchant,updateMerchant,drawMerchant} from './merchants.js?v=0.9.2';
 import {villageKnights,drawKnight} from './knights.js';
-import {hash} from './world.js';
+import {hash} from './world.js?v=0.9.3';
 import {collides} from './geometry.js';
 import {moveActor} from './hero.js';
 export function clearLine(a,b,objects){const n=Math.ceil(Math.hypot(a.x-b.x,a.y-b.y)/3);for(let i=1;i<=n;i++)if(objects.some(o=>collides(a.x+(b.x-a.x)*i/n,a.y+(b.y-a.y)*i/n,o,1)))return false;return true}

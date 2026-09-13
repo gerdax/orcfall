@@ -1,7 +1,8 @@
+import {addWatchtowers} from './watchtowers.js';
 import {addPalisade} from './palisades.js?v=0.8.1';
 import {riverGround,fishingHuts,fieldAt} from './countryside.js';
 import {makeCastle,CASTLE_CHANCE} from './castles.js';
-import {makeTown,TOWN_SPACING} from './settlements.js?v=0.8.1';
+import {makeTown,TOWN_SPACING} from './settlements.js?v=0.9.3';
 // All generation depends only on global coordinates and the world seed.
 // Chunk order, cache eviction and exploration history cannot change terrain.
 export const CHUNK_SIZE = 128;
@@ -45,6 +46,7 @@ export class World {
       for(let i=0;i<32;i++){x=gx*TOWN_SPACING-this.warp(y);y=gy*TOWN_SPACING-this.warp(x)}
       town=(castle?makeCastle:makeTown)(gx,gy,Math.round(x),Math.round(y),this.seed);
       addPalisade(town,t=>this.warp(t));
+      addWatchtowers(town);
     }
     this.towns.set(key,town);
     if(this.towns.size>64)this.towns.delete(this.towns.keys().next().value);

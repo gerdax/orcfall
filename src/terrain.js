@@ -1,6 +1,6 @@
 import {riverGround,fieldAt} from './countryside.js';
 import {castleGround} from './castles.js';
-import {CHUNK_SIZE, hash} from './world.js';
+import {CHUNK_SIZE, hash} from './world.js?v=0.9.3';
 const grass=['#263820','#30451f','#3b501f','#465b25','#50652b','#5a7130','#637933'];
 const trail=['#625236','#705c3d','#806b46'];
 // Height is sampled on a coarse lattice, but all visible edges and marks use

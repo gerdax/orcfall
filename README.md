@@ -104,3 +104,6 @@ Każda wioska ma pięciu przyjaznych rycerzy w stalowych zbrojach, z tarczami i 
 
 ### Kupcy
 W osadach kupcy jadą konnymi wozami z płóciennym zadaszeniem i towarem. Kursują między wioskami wzdłuż północno-południowych traktów, zatrzymują się na 8 sekund u celu i wracają. Poza wczytanym obszarem podróż jest wstrzymana, a pozycja zachowana do powrotu gracza. Są przyjaźni, a na minimapie mają złoty znacznik. Handel nie jest jeszcze dostępny.
+
+### Wieże strażnicze
+Każda wioska ma dwie drewniane wieże przy północnym i południowym podejściu. Mają podesty, drabiny, dachy i chorągwie; widoczny na podeście strażnik jest elementem grafiki. Wieże nie prowadzą ostrzału. Ich podstawy blokują ruch, a rozmieszczenie pozostawia wolne drogi i budynki.

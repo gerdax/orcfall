@@ -1,4 +1,4 @@
-import {hash} from './world.js';
+import {hash} from './world.js?v=0.9.3';
 // Native pixel silhouettes, shaded in small clusters; cached per variant.
 const cache=new Map();
 export function drawScenery(ctx,o,hero){
