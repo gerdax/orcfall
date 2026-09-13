@@ -17,3 +17,15 @@ test('camps contain both species and a chief on clear wilderness ground',()=>{
   drawChief(ctx,boss,1);for(const o of objects.filter(o=>o.type.startsWith('camp-')))drawCamp(ctx,o,1);assert.ok(area>500);
  }
 });
+
+test('camps vary from one to three tents without blocking residents',async()=>{
+ const {campObjects}=await import('../src/camps.js');const counts=new Set();
+ for(let seed=1;seed<=5;seed++){
+  const camps=campsIn(new World(seed),-2000,-2000,2000,2000);
+  for(const c of camps){const objects=campObjects(c),tents=objects.filter(o=>o.type==='camp-tent');counts.add(tents.length);
+   assert.equal(tents.length,c.tentCount);
+   for(const a of campResidents(c))assert.ok(!objects.some(o=>collides(a.x,a.y,o)));
+  }
+ }
+ assert.deepEqual([...counts].sort(),[1,2,3]);
+});

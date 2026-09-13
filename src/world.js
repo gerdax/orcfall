@@ -1,4 +1,4 @@
-import {campsIn,campObjects,campResidents} from './camps.js';
+import {campsIn,campObjects,campResidents} from './camps.js?v=0.10.2';
 import {addWatchtowers} from './watchtowers.js';
 import {addPalisade} from './palisades.js?v=0.8.1';
 import {riverGround,fishingHuts,fieldAt} from './countryside.js';

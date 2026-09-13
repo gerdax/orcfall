@@ -7,7 +7,7 @@ export function campsIn(world,left,top,right,bottom){
   if(!world.camps.has(id)){
    const x=gx*512+256,y=gy*512+256;let valid=hash(gx,gy,world.seed+2201)<.5;
    for(let dy=-80;dy<=80&&valid;dy+=16)for(let dx=-80;dx<=80;dx+=16)if(world.townAt(x+dx,y+dy)||riverGround(world,x+dx,y+dy)||world.pathDistance(x+dx,y+dy)<24){valid=false;break}
-   world.camps.set(id,valid?{id,x,y}:null);
+   world.camps.set(id,valid?{id,x,y,tentCount:1+Math.floor(hash(gx,gy,world.seed+2202)*3)}:null);
   }
   const c=world.camps.get(id);if(c&&c.x+90>=left&&c.x-90<=right&&c.y+90>=top&&c.y-90<=bottom)result.push(c);
  }
@@ -15,8 +15,7 @@ export function campsIn(world,left,top,right,bottom){
  return result;
 }
 export function campObjects(c){return [
- {type:'camp-tent',x:c.x-37,y:c.y-30,w:32,h:24,label:'Obóz orków i goblinów'},
- {type:'camp-tent',x:c.x+37,y:c.y-30,w:32,h:24},
+ ...[[-37,-30],[37,-30],[0,-67]].slice(0,c.tentCount??2).map(([dx,dy],i)=>({type:'camp-tent',x:c.x+dx,y:c.y+dy,w:32,h:24,label:i===0?'Obóz orków i goblinów':undefined})),
  {type:'camp-fire',x:c.x,y:c.y+12,w:12,h:12,decorative:true},
  {type:'crate',x:c.x-42,y:c.y+25,w:12,h:12},
  {type:'barrel',x:c.x+42,y:c.y+25,w:8,h:10}];}

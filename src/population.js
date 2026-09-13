@@ -1,5 +1,5 @@
 import {makeFisherman,drawFisherman} from './fishermen.js';
-import {drawChief} from './camps.js';
+import {drawChief} from './camps.js?v=0.10.2';
 import {GuardCombat,isGuard} from './guard-combat.js';
 import {spawnRaid} from './raids.js?v=0.9.9';
 import {TowerCombat} from './tower-combat.js?v=0.9.9';

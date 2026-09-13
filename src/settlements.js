@@ -1,4 +1,4 @@
-import {drawCamp} from './camps.js';
+import {drawCamp} from './camps.js?v=0.10.2';
 import {drawWatchtower} from './watchtowers.js';
 import {drawPalisade} from './palisades.js?v=0.8.1';
 import {rotatedBounds,buildingDoor,collides} from './geometry.js';

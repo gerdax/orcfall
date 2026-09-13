@@ -1,11 +1,11 @@
 import {daylight,drawNight} from './day-night.js';
 import {drawFishingGear} from './countryside.js';
 import {healAtWell} from './healing.js';
-import {Population,drawPerson,drawCorpse} from './population.js?v=0.10.1';
+import {Population,drawPerson,drawCorpse} from './population.js?v=0.10.2';
 import {drawCastle} from './castles.js';
 import {drawScenery} from './scenery.js';
 import {drawSettlement,isSettlementObject} from './settlements.js?v=0.10.0';
-import {World,CHUNK_SIZE,DEFAULT_SEED} from './world.js?v=0.10.0';
+import {World,CHUNK_SIZE,DEFAULT_SEED} from './world.js?v=0.10.2';
 import {terrainSurface} from './terrain.js';
 import {drawHero,moveActor} from './hero.js';
 const $=id=>document.getElementById(id),canvas=$('game'),ctx=canvas.getContext('2d');
