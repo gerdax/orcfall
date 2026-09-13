@@ -5,9 +5,9 @@ import {drawPalisade} from './palisades.js?v=0.8.1';
 import {rotatedBounds,buildingDoor,collides} from './geometry.js';
 // Buildings share the hero's native 1 px grid: no high-resolution textures.
 export const TOWN_SPACING=1280;
-export function makeTown(gx,gy,x,y,seed){
+export function makeTown(gx,gy,x,y,seed,city=false){
  const names=['Brzeziny','Dębowiec','Kamienny Bród','Lipowa Dolina','Borki','Zielone Łęgi'];
- const name=names[Math.abs((gx*7+gy*13+seed)%names.length)];
+ const name=(city?'Miasto ':'')+names[Math.abs((gx*7+gy*13+seed)%names.length)];
  let state=(seed^Math.imul(gx,73856093)^Math.imul(gy,19349663))>>>0;
  state=Math.imul(state^(state>>>16),0x7feb352d);state=Math.imul(state^(state>>>15),0x846ca68b);state=(state^(state>>>16))>>>0;
  const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296};
@@ -31,15 +31,15 @@ export function makeTown(gx,gy,x,y,seed){
  const gate={x:x+Math.round(left-8),y:y+Math.round(top+24)};
  const clusters=[{x:-115,y:111},{x:116,y:112},{x:-135,y:-149}];
  if(layout===1)courtyards.push(...clusters.slice(0,2).map(c=>({...c,r:21})));
- const target=5+Math.floor(random()*4);
+ const target=city?12:5+Math.floor(random()*4);
  let houses=0;
- for(let attempt=0;attempt<400&&houses<target;attempt++){
+ for(let attempt=0;attempt<(city?1600:400)&&houses<target;attempt++){
   let dx,dy;
   if(layout===0){dx=(random()>.5?1:-1)*(63+random()*74);dy=-195+random()*390}
   else if(layout===1){const c=clusters[attempt%3],a=random()*Math.PI*2,r=48+random()*20;dx=c.x+Math.cos(a)*r;dy=c.y+Math.sin(a)*r}
   else{const c=clusters[attempt%3];dx=c.x+(random()-.5)*140;dy=c.y+(random()-.5)*145}
   dx=Math.round(dx);dy=Math.round(dy);
-  const sw=30+Math.floor(random()*9)*2,sh=24+Math.floor(random()*6)*2;
+  const sw=city?30:30+Math.floor(random()*9)*2,sh=city?24:24+Math.floor(random()*6)*2;
   let tx=0,ty=0;
   if(layout===1){const c=clusters[attempt%3];tx=c.x;ty=c.y}
   else if(Math.abs(dx)<Math.abs(dy)){ty=dy}else{tx=dx}
@@ -73,7 +73,8 @@ export function makeTown(gx,gy,x,y,seed){
   while(cursor!==start){const px=(cursor%side)*step-limit,py=Math.floor(cursor/side)*step-limit;points.push({x:px,y:py});if(Math.min(Math.abs(px+Math.sin(py/70)*11),Math.abs(py+Math.sin(px/85)*9))<7)break;cursor=parent[cursor]}
   for(let i=0;i<points.length-1;){let j=i+1;const dx=points[j].x-points[i].x,dy=points[j].y-points[i].y;while(j+1<points.length&&points[j+1].x-points[j].x===dx&&points[j+1].y-points[j].y===dy)j++;lanes.push({ax:points[i].x,ay:points[i].y,bx:points[j].x,by:points[j].y});i=j}
  }
- return {id:`${gx}:${gy}`,x,y,name,layout,lanes,courtyards,objects};
+ if(city){courtyards.push({x:0,y:0,r:36});add('crate',-25,-20,12,12);add('barrel',25,-20,8,10)}
+ return {id:`${gx}:${gy}`,x,y,name,layout,lanes,courtyards,objects,...(city?{kind:'city'}:{})};
 }
 function drawSettlementShape(ctx,o,time=0){
  const x=Math.round(o.x),y=Math.round(o.y);
