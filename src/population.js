@@ -1,3 +1,4 @@
+import {TowerCombat} from './tower-combat.js';
 import {makeMerchant,updateMerchant,drawMerchant} from './merchants.js?v=0.9.2';
 import {villageKnights,drawKnight} from './knights.js';
 import {hash} from './world.js?v=0.9.3';
@@ -5,7 +6,7 @@ import {collides} from './geometry.js';
 import {moveActor} from './hero.js';
 export function clearLine(a,b,objects){const n=Math.ceil(Math.hypot(a.x-b.x,a.y-b.y)/3);for(let i=1;i<=n;i++)if(objects.some(o=>collides(a.x+(b.x-a.x)*i/n,a.y+(b.y-a.y)*i/n,o,1)))return false;return true}
 export class Population{
- constructor(){this.traders=new Map();this.corpses=[];this.actors=new Map();this.defeated=new Set();this.loaded=new Set()}
+ constructor(){this.towers=new TowerCombat();this.traders=new Map();this.corpses=[];this.actors=new Map();this.defeated=new Set();this.loaded=new Set()}
  sync(world,chunks){
   const present=new Set(chunks.map(c=>`${c.cx}:${c.cy}`));
   for(const [id,a] of this.actors)if(!['knight','merchant'].includes(a.type)&&!present.has(a.chunk)){this.actors.delete(id)}
@@ -33,6 +34,7 @@ export class Population{
  }
  update(dt,hero,objects,time,hurt){
   this.corpses=this.corpses.filter(c=>time<c.expiresAt);
+  this.towers.update(dt,objects,this.actors,time,(a,t)=>this.damageOrc(a,t));
   for(const a of this.actors.values()){
    if(a.type==='merchant'){updateMerchant(a,dt);continue}
    a.cooldown=Math.max(0,a.cooldown-dt);a.timer-=dt;
@@ -45,7 +47,13 @@ export class Population{
    if(Math.hypot(dx,dy)>3){a.dir=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';a.moving=moveActor(a,dx,dy,dt,a.patrolObstacles??objects,null,null,hostile?36:a.type==='human'?13:17)}
   }
  }
- strike(hero,angle,objects,time){let hits=0,kills=0;for(const [id,a] of this.actors){if(a.type!=='orc')continue;const d=Math.hypot(a.x-hero.x,a.y-hero.y),dir=Math.atan2(a.y-hero.y,a.x-hero.x)-angle;if(d<30&&(d<12||Math.cos(dir)>Math.cos(1.25))&&clearLine(hero,a,objects)){a.hp--;a.flash=time+.18;a.windup=0;a.cooldown=.5;hits++;if(a.hp<=0){this.corpses.push({...a,expiresAt:time+10});this.actors.delete(id);this.defeated.add(id);kills++}}}return {hits,kills}}
+ damageOrc(a,time){
+  if(a.type!=='orc'||!this.actors.has(a.id))return false;
+  a.hp--;a.flash=time+.18;a.windup=0;a.cooldown=.5;
+  if(a.hp>0)return false;
+  this.corpses.push({...a,expiresAt:time+10});this.actors.delete(a.id);this.defeated.add(a.id);return true;
+ }
+ strike(hero,angle,objects,time){let hits=0,kills=0;for(const [id,a] of this.actors){if(a.type!=='orc')continue;const d=Math.hypot(a.x-hero.x,a.y-hero.y),dir=Math.atan2(a.y-hero.y,a.x-hero.x)-angle;if(d<30&&(d<12||Math.cos(dir)>Math.cos(1.25))&&clearLine(hero,a,objects)){hits++;if(this.damageOrc(a,time))kills++}}return {hits,kills}}
 }
 const HUMAN=['................','......oooo......','.....ohhhho.....','.....ohHHho.....','.....osssso.....','.....osSsso.....','......osso......','....ooccccoo....','...osccccccso...','...osccccccso...','....occcccco....','.....obbbbo.....','.....oboboo.....','.....oo.oo......','................','................'];
 const ORC=['................','.....oooooo.....','....ogGGGggo....','...ogGGGGGGgo...','...ogYgGGYggo...','....oggggggo....','....oWgggWo.....','...ootttttoo....','..ogotTTttogo...','..ogotttttogo...','...ootttttoo....','....obbbbbo.....','....obboobbo....','....ooo.ooo.....','................','................'];

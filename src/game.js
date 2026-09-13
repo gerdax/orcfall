@@ -1,6 +1,6 @@
 import {drawFishingGear} from './countryside.js';
 import {healAtWell} from './healing.js';
-import {Population,drawPerson,drawCorpse} from './population.js?v=0.9.2';
+import {Population,drawPerson,drawCorpse} from './population.js?v=0.9.4';
 import {drawCastle} from './castles.js';
 import {drawScenery} from './scenery.js';
 import {drawSettlement,isSettlementObject} from './settlements.js?v=0.9.3';
@@ -62,6 +62,7 @@ for(let i=-4;i<=4;i++){const flame=5+Math.round(Math.sin(time*10+i*2)*2)+(4-Math
 rect(-1,-48,3,7,'#f0d275');
 for(const corpse of population.corpses)drawCorpse(ctx,corpse,time);
 const items=[...Array.from(population.actors.values(),a=>({y:a.y,draw:()=>drawPerson(ctx,a,time)})),...nearbyObjects.filter(o=>o.type!=='river-water').map(o=>({y:o.y,draw:()=>o.type.startsWith('castle-')?drawCastle(ctx,o,time):isSettlementObject(o)?(drawSettlement(ctx,o,time),o.fishing&&drawFishingGear(ctx,o)):drawScenery(ctx,o,hero)})),...dummies.map(o=>({y:o.y,draw:()=>dummy(o)})),{y:hero.y,draw:()=>{rect(hero.x-6,hero.y+5,13,3,'#293c2d');ctx.globalAlpha=time<hero.hurtUntil&&Math.floor(time*12)%2?.4:1;drawHero(ctx,hero.x,hero.y,hero.dir,hero.moving?1+(Math.floor(time*10)%2):0);ctx.globalAlpha=1;if(time<attackUntil){const progress=1-(attackUntil-time)/.23,a=angle()-1.2+progress*2.4;for(let i=0;i<10;i++){const aa=a-i*.075;rect(hero.x+Math.cos(aa)*20,hero.y+Math.sin(aa)*20,2,2,i<4?'#e7edcf':'#9dac98')}for(let i=7;i<20;i++)rect(hero.x+Math.cos(a)*i,hero.y+Math.sin(a)*i,2,2,'#dae1d4')}}}];items.sort((a,b)=>a.y-b.y).forEach(i=>i.draw());for(const p of particles){ctx.globalAlpha=Math.min(1,p.life*2);rect(p.x,p.y,2,2,p.color)}ctx.globalAlpha=1;
+population.towers.draw(ctx);
 ctx.restore();
 drawMinimap();
 // Quiet drifting motes add movement without softening the pixels.
