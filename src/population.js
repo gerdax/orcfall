@@ -1,3 +1,4 @@
+import {spawnRaid} from './raids.js';
 import {TowerCombat} from './tower-combat.js';
 import {makeMerchant,updateMerchant,drawMerchant} from './merchants.js?v=0.9.2';
 import {villageKnights,drawKnight} from './knights.js';
@@ -6,14 +7,24 @@ import {collides} from './geometry.js';
 import {moveActor} from './hero.js';
 export function clearLine(a,b,objects){const n=Math.ceil(Math.hypot(a.x-b.x,a.y-b.y)/3);for(let i=1;i<=n;i++)if(objects.some(o=>collides(a.x+(b.x-a.x)*i/n,a.y+(b.y-a.y)*i/n,o,1)))return false;return true}
 export class Population{
- constructor(){this.towers=new TowerCombat();this.traders=new Map();this.corpses=[];this.actors=new Map();this.defeated=new Set();this.loaded=new Set()}
+ constructor(){this.raidWaves=new Set();this.raidActors=new Map();this.night=-1;this.towers=new TowerCombat();this.traders=new Map();this.corpses=[];this.actors=new Map();this.defeated=new Set();this.loaded=new Set()}
  sync(world,chunks){
+  this.raidWorld=world;
   const present=new Set(chunks.map(c=>`${c.cx}:${c.cy}`));
-  for(const [id,a] of this.actors)if(!['knight','merchant'].includes(a.type)&&!present.has(a.chunk)){this.actors.delete(id)}
+  for(const [id,a] of this.actors)if(!a.raid&&!['knight','merchant'].includes(a.type)&&!present.has(a.chunk)){this.actors.delete(id)}
   for(const key of this.loaded)if(!present.has(key))this.loaded.delete(key);
   const obstacles=chunks.flatMap(c=>c.objects);
   const towns=new Map();
   for(const c of chunks)for(const t of world.townsIn(c.x,c.y,c.x+128,c.y+128))if(t.kind!=='castle')towns.set(t.id,t);
+  if(this.night>=0)for(const town of towns.values()){
+   const key=`${this.night}:${town.id}`;
+   if(!this.raidWaves.has(key)){this.raidWaves.add(key);for(const a of spawnRaid(town,this.night,world))this.raidActors.set(a.id,a)}
+  }
+  for(const a of this.raidActors.values()){
+   if(this.defeated.has(a.id))continue;
+   if(towns.has(a.townId)||present.has(`${Math.floor(a.x/128)}:${Math.floor(a.y/128)}`))this.actors.set(a.id,a);
+   else this.actors.delete(a.id);
+  }
   for(const [id,a] of this.actors)if(a.type==='knight'&&!towns.has(a.townId))this.actors.delete(id);
   for(const town of towns.values())if(!this.actors.has(`${town.id}:merchant`)){let a=this.traders.get(town.id);if(!a){a=makeMerchant(town,world);if(a)this.traders.set(town.id,a)}if(a)this.actors.set(a.id,a)}
   for(const [id,a] of this.actors)if(a.type==='merchant'&&!towns.has(a.townId)&&!present.has(`${Math.floor(a.x/128)}:${Math.floor(a.y/128)}`))this.actors.delete(id);
@@ -38,13 +49,20 @@ export class Population{
   for(const a of this.actors.values()){
    if(a.type==='merchant'){updateMerchant(a,dt);continue}
    a.cooldown=Math.max(0,a.cooldown-dt);a.timer-=dt;
-   const d=Math.hypot(hero.x-a.x,hero.y-a.y),hostile=a.type==='orc'&&d<110&&Math.hypot(hero.x-a.homeX,hero.y-a.homeY)<175&&clearLine(a,hero,objects);
+   const d=Math.hypot(hero.x-a.x,hero.y-a.y),hostile=a.type==='orc'&&d<110&&(a.raid||Math.hypot(hero.x-a.homeX,hero.y-a.homeY)<175)&&clearLine(a,hero,objects);
    a.moving=false;
    if(a.windup>0){a.windup-=dt;if(a.windup<=0){if(d<23&&clearLine(a,hero,objects))hurt();a.cooldown=1.2}continue}
    if(hostile&&d<20){if(a.cooldown<=0)a.windup=.45;continue}
-   if(a.timer<=0){const phase=hash(Math.floor(time/3),a.homeX|0,a.homeY|0)*Math.PI*2;a.targetX=a.homeX+Math.cos(phase)*(a.type==='human'?26:38);a.targetY=a.homeY+Math.sin(phase)*(a.type==='human'?26:38);a.timer=3}
-   const dx=(hostile?hero.x:a.targetX??a.x)-a.x,dy=(hostile?hero.y:a.targetY??a.y)-a.y;
-   if(Math.hypot(dx,dy)>3){a.dir=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';a.moving=moveActor(a,dx,dy,dt,a.patrolObstacles??objects,null,null,hostile?36:a.type==='human'?13:17)}
+   if(!a.raid&&a.timer<=0){const phase=hash(Math.floor(time/3),a.homeX|0,a.homeY|0)*Math.PI*2;a.targetX=a.homeX+Math.cos(phase)*(a.type==='human'?26:38);a.targetY=a.homeY+Math.sin(phase)*(a.type==='human'?26:38);a.timer=3}
+   if(a.raid&&!hostile){
+    // Approach along the village's central north/south road and open gate.
+
+    const dy=a.y-a.targetY,u=Math.max(0,Math.min(1,(Math.abs(dy)-200)/60)),blend=u*u*(3-2*u);
+    const roadX=a.targetX-(1-blend)*Math.sin(dy/70)*11-blend*(this.raidWorld.warp(a.y)-this.raidWorld.warp(a.targetY));
+    a.raidX=roadX;a.raidY=Math.abs(a.x-roadX)>3?a.y:a.targetY;
+   }
+   const dx=(hostile?hero.x:a.raid?a.raidX:a.targetX??a.x)-a.x,dy=(hostile?hero.y:a.raid?a.raidY:a.targetY??a.y)-a.y;
+   if(Math.hypot(dx,dy)>3){a.dir=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';a.moving=moveActor(a,dx,dy,dt,a.raid?this.raidWorld.region(a.x-32,a.y-32,a.x+32,a.y+32).flatMap(c=>c.objects):a.patrolObstacles??objects,null,null,hostile?36:a.type==='human'?13:17)}
   }
  }
  damageOrc(a,time){

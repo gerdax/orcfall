@@ -110,3 +110,6 @@ Każda wioska ma dwie drewniane wieże przy północnym i południowym podejści
 
 ### Dzień i noc
 Noc zaczyna się co 3 minuty aktywnej gry (3:00, 6:00, 9:00) i trwa minutę: 10 sekund zmierzchu, 40 sekund nocy i 10 sekund świtu. Pauza zatrzymuje cykl, restart wyprawy rozpoczyna nowy dzień. Niebieskie przyciemnienie obejmuje świat, a interfejs pozostaje czytelny.
+
+### Nocne najazdy
+Podczas każdej nocy pobliskie wioski otrzymują jedną falę pięciu orków. Napastnicy podchodzą północnym traktem do centrum, atakują bohatera w zasięgu i są ostrzeliwani przez wieże. Nie niszczą jeszcze budynków ani nie walczą z mieszkańcami. Fala nie powiela się przy ponownym wczytaniu osady; kolejna noc przynosi kolejną piątkę. Najazdy odległych, niewczytanych osad nie są symulowane.
