@@ -1,20 +1,44 @@
 import {collides} from './geometry.js';
-// One trader follows a safe central road in each settlement.
-export function makeMerchant(town){
- const route=[];
- for(let y=-56;y<=56;y+=4){const x=town.x-Math.sin(y/70)*11,wy=town.y+y;
-  if(town.objects.some(o=>collides(x,wy,o,16)))break;
-  route.push({x,y:wy});
+// Trade routes follow the north/south trunk road to another village.
+export function makeMerchant(town,world){
+ if(!world)return null;
+ const [gx,gy]=town.id.split(':').map(Number);
+ let destination;
+ for(const sign of [1,-1]){
+ for(let distance=1;distance<=6&&!destination;distance++){
+  const candidate=world.getTown(gx,gy+sign*distance);
+  if(candidate?.kind==='castle')break;
+  if(candidate)destination=candidate;
  }
- if(route.length<8)return null;
- const start=route[0];return {id:`${town.id}:merchant`,townId:town.id,type:'merchant',...start,route,index:1,direction:1,dir:'down',moving:false,wait:0};
+ }
+ if(!destination)return null;
+ const route=[];
+ const travelSign=Math.sign(destination.y-town.y);
+ for(let y=town.y;travelSign*(destination.y-y)>=0;y+=travelSign*4){
+  const local=world.townAt(gx*1280-world.warp(y),y);
+  let x=gx*1280-world.warp(y);
+  if(local){const dy=y-local.y,r=Math.abs(dy),u=Math.max(0,Math.min(1,(r-200)/60)),blend=u*u*(3-2*u);
+   x=local.x-(1-blend)*Math.sin(dy/70)*11-blend*(world.warp(y)-world.warp(local.y));
+  }
+  if(local){
+   const base=x;let found=false;
+   for(let offset=0;offset<=32&&!found;offset++)for(const sign of [1,-1]){
+    const candidate=base+offset*sign;
+    if(!local.objects.some(o=>collides(candidate,y,o,10))){x=candidate;found=true;break}
+   }
+   if(!found)return null;
+  }
+  route.push({x,y});
+ }
+ route.push({x:destination.x,y:destination.y});
+ const start=route[0];return {id:`${town.id}:merchant`,townId:town.id,destinationId:destination.id,type:'merchant',...start,route,index:1,direction:1,dir:'down',moving:false,wait:0};
 }
 export function updateMerchant(a,dt){
  a.moving=false;if(a.wait>0){a.wait-=dt;return}
- const target=a.route[a.index],dx=target.x-a.x,dy=target.y-a.y,d=Math.hypot(dx,dy),step=13*dt;
- a.dir=a.direction>0?'down':'up';
+ const target=a.route[a.index],dx=target.x-a.x,dy=target.y-a.y,d=Math.hypot(dx,dy),step=30*dt;
+ a.dir=dy>=0?'down':'up';
  if(d<=step){a.x=target.x;a.y=target.y;a.index+=a.direction;
-  if(a.index>=a.route.length||a.index<0){a.direction*=-1;a.index+=a.direction*2;a.wait=4}
+  if(a.index>=a.route.length||a.index<0){a.direction*=-1;a.index+=a.direction*2;a.wait=8}
  }else{a.x+=dx/d*step;a.y+=dy/d*step;a.moving=true}
 }
 export function drawMerchant(ctx,a,time){

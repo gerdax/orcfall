@@ -1,3 +1,4 @@
+import {collides} from '../src/geometry.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {World} from '../src/world.js';
@@ -5,9 +6,10 @@ import {makeMerchant,updateMerchant,drawMerchant} from '../src/merchants.js';
 import {Population} from '../src/population.js';
 test('horse carts follow safe routes, turn and pause at endpoints',()=>{
  for(let seed=1;seed<=8;seed++){
-  const t=new World(seed).getTown(0,0),a=makeMerchant(t);assert.ok(a);
+  const w=new World(seed),t=w.getTown(0,0),a=makeMerchant(t,w);if(!a)continue;assert.notEqual(a.destinationId,t.id);assert.ok(a.route.length>250);
+  for(const point of a.route){const town=w.townAt(point.x,point.y);assert.ok(!town?.objects.some(o=>collides(point.x,point.y,o,10)),'trade road must be clear')}
   let turned=false,paused=false;
-  for(let i=0;i<1500;i++){updateMerchant(a,1/30);turned ||= a.direction===-1;paused ||= a.wait>0;assert.ok(Number.isFinite(a.x)&&Number.isFinite(a.y))}
+  for(let i=0;i<30000;i++){updateMerchant(a,1/30);turned ||= a.direction===-1;paused ||= a.wait>0;assert.ok(Number.isFinite(a.x)&&Number.isFinite(a.y))}
   assert.ok(turned&&paused);let pixels=0;drawMerchant({set fillStyle(v){},fillRect(...v){assert.ok(v.every(Number.isInteger));pixels+=v[2]*v[3]}},a,1);assert.ok(pixels>100);
  }
 });

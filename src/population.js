@@ -1,11 +1,11 @@
-import {makeMerchant,updateMerchant,drawMerchant} from './merchants.js';
+import {makeMerchant,updateMerchant,drawMerchant} from './merchants.js?v=0.9.2';
 import {villageKnights,drawKnight} from './knights.js';
 import {hash} from './world.js';
 import {collides} from './geometry.js';
 import {moveActor} from './hero.js';
 export function clearLine(a,b,objects){const n=Math.ceil(Math.hypot(a.x-b.x,a.y-b.y)/3);for(let i=1;i<=n;i++)if(objects.some(o=>collides(a.x+(b.x-a.x)*i/n,a.y+(b.y-a.y)*i/n,o,1)))return false;return true}
 export class Population{
- constructor(){this.corpses=[];this.actors=new Map();this.defeated=new Set();this.loaded=new Set()}
+ constructor(){this.traders=new Map();this.corpses=[];this.actors=new Map();this.defeated=new Set();this.loaded=new Set()}
  sync(world,chunks){
   const present=new Set(chunks.map(c=>`${c.cx}:${c.cy}`));
   for(const [id,a] of this.actors)if(!['knight','merchant'].includes(a.type)&&!present.has(a.chunk)){this.actors.delete(id)}
@@ -13,8 +13,10 @@ export class Population{
   const obstacles=chunks.flatMap(c=>c.objects);
   const towns=new Map();
   for(const c of chunks)for(const t of world.townsIn(c.x,c.y,c.x+128,c.y+128))if(t.kind!=='castle')towns.set(t.id,t);
-  for(const [id,a] of this.actors)if(['knight','merchant'].includes(a.type)&&!towns.has(a.townId))this.actors.delete(id);
-  for(const town of towns.values())if(!this.actors.has(`${town.id}:merchant`)){const a=makeMerchant(town);if(a)this.actors.set(a.id,a)}
+  for(const [id,a] of this.actors)if(a.type==='knight'&&!towns.has(a.townId))this.actors.delete(id);
+  for(const town of towns.values())if(!this.actors.has(`${town.id}:merchant`)){let a=this.traders.get(town.id);if(!a){a=makeMerchant(town,world);if(a)this.traders.set(town.id,a)}if(a)this.actors.set(a.id,a)}
+  for(const [id,a] of this.actors)if(a.type==='merchant'&&!towns.has(a.townId)&&!present.has(`${Math.floor(a.x/128)}:${Math.floor(a.y/128)}`))this.actors.delete(id);
+  for(const a of this.traders.values())if(present.has(`${Math.floor(a.x/128)}:${Math.floor(a.y/128)}`))this.actors.set(a.id,a);
   for(const town of towns.values())if(!this.actors.has(`${town.id}:knight:0`))for(const a of villageKnights(town))this.actors.set(a.id,{...a,patrolObstacles:town.objects});
 
   for(const c of chunks){const key=`${c.cx}:${c.cy}`;if(this.loaded.has(key))continue;this.loaded.add(key);

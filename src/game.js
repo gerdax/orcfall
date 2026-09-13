@@ -1,6 +1,6 @@
 import {drawFishingGear} from './countryside.js';
 import {healAtWell} from './healing.js';
-import {Population,drawPerson,drawCorpse} from './population.js?v=0.9.1';
+import {Population,drawPerson,drawCorpse} from './population.js?v=0.9.2';
 import {drawCastle} from './castles.js';
 import {drawScenery} from './scenery.js';
 import {drawSettlement,isSettlementObject} from './settlements.js?v=0.8.1';
