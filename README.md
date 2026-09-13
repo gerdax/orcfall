@@ -107,3 +107,6 @@ W osadach kupcy jadą konnymi wozami z płóciennym zadaszeniem i towarem. Kursu
 
 ### Wieże strażnicze
 Każda wioska ma dwie drewniane wieże przy północnym i południowym podejściu. Mają podesty, drabiny, dachy i chorągwie; widoczny na podeście strażnik jest elementem grafiki. Wieże automatycznie ostrzeliwują najbliższego orka w promieniu 150 pikseli, co 1,3 sekundy. Strzały lecą łukiem ponad ogrodzeniami i zadają punkt obrażeń dopiero przy trafieniu; poruszający się cel może uniknąć pocisku. Ich podstawy blokują ruch, a rozmieszczenie pozostawia wolne drogi i budynki.
+
+### Dzień i noc
+Noc zaczyna się co 3 minuty aktywnej gry (3:00, 6:00, 9:00) i trwa minutę: 10 sekund zmierzchu, 40 sekund nocy i 10 sekund świtu. Pauza zatrzymuje cykl, restart wyprawy rozpoczyna nowy dzień. Niebieskie przyciemnienie obejmuje świat, a interfejs pozostaje czytelny.
