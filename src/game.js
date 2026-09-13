@@ -1,6 +1,6 @@
 import {drawFishingGear} from './countryside.js';
 import {healAtWell} from './healing.js';
-import {Population,drawPerson,drawCorpse} from './population.js';
+import {Population,drawPerson,drawCorpse} from './population.js?v=0.9.0';
 import {drawCastle} from './castles.js';
 import {drawScenery} from './scenery.js';
 import {drawSettlement,isSettlementObject} from './settlements.js?v=0.8.1';
@@ -79,7 +79,7 @@ function drawMinimap(){
   if(!['house','inn','stable','castle-keep','castle-tower'].includes(o.type))continue;
   m.fillStyle=t.kind==='castle'?'#dcc389':'#94704b';m.fillRect(Math.round((o.x-left)/8)-2,Math.round((o.y-top)/8)-2,4,3);
  }
- for(const a of population.actors.values()){m.fillStyle=a.type==='orc'?'#d55d40':'#cfcd94';m.fillRect(Math.round((a.x-left)/8),Math.round((a.y-top)/8),2,2)}
+ for(const a of population.actors.values()){m.fillStyle=a.type==='orc'?'#d55d40':a.type==='knight'?'#a4bfdc':'#cfcd94';m.fillRect(Math.round((a.x-left)/8),Math.round((a.y-top)/8),2,2)}
  m.fillStyle='#151a14';m.fillRect(37,37,7,7);m.fillStyle='#8fb8df';m.fillRect(39,38,3,5);m.fillStyle='#f2efda';m.fillRect(38,39,5,2);
 }
 function frame(now){const dt=Math.min((now-last)/1000,1/30);last=now;if(!paused)update(dt);draw();requestAnimationFrame(frame)}

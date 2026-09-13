@@ -98,3 +98,6 @@ Repozytorium jest lokalne; kopia zdalna nie została skonfigurowana w ramach tej
 Przed cofaniem zmian należy sprawdzić i zabezpieczyć niezacommitowaną pracę.
 Git chroni zapisane wersje; lokalna historia nie zastępuje kopii zapasowej dysku.
 Pliki robocze w `work/`, logi i pliki `.env` nie są wersjonowane.
+
+### Rycerze w osadach
+Każda wioska ma pięciu przyjaznych rycerzy w stalowych zbrojach, z tarczami i mieczami. Patrolują krótkie odcinki wokół swoich posterunków, respektują budynki i ogrodzenia. Nie można zranić ich mieczem bohatera. Na minimapie mają jasnoniebieskie znaczniki. Nie prowadzą jeszcze walki z orkami.
