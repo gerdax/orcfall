@@ -29,6 +29,7 @@ export function drawKnight(ctx,a,time){
 
 export function drawGuard(ctx,a,time){
  drawKnight(ctx,a,time);
+ if(time<(a.attackFlash||0)){ctx.fillStyle='#e4d4a1';ctx.fillRect(Math.round(a.x)+7,Math.round(a.y)-5,3,2)}
  const x=Math.round(a.x)+(a.dir==='left'?-7:7),y=Math.round(a.y);
  const p=(dx,dy,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x+dx,y+dy,w,h)};
  if(a.type==='spearman'){p(0,-13,1,23,'#ac8850');p(-1,-16,3,4,'#d3ded9');p(0,-18,1,2,'#edf0de')}

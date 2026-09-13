@@ -100,7 +100,7 @@ Git chroni zapisane wersje; lokalna historia nie zastępuje kopii zapasowej dysk
 Pliki robocze w `work/`, logi i pliki `.env` nie są wersjonowane.
 
 ### Rycerze w osadach
-Każda wioska ma pięciu przyjaznych rycerzy w stalowych zbrojach, z tarczami i mieczami. Patrolują krótkie odcinki wokół swoich posterunków, respektują budynki i ogrodzenia. Nie można zranić ich mieczem bohatera. Na minimapie mają jasnoniebieskie znaczniki. Nie prowadzą jeszcze walki z orkami.
+Każda wioska ma pięciu przyjaznych rycerzy w stalowych zbrojach, z tarczami i mieczami. Patrolują krótkie odcinki wokół swoich posterunków, respektują budynki i ogrodzenia. Nie można zranić ich mieczem bohatera. Na minimapie mają jasnoniebieskie znaczniki. Reagują na pobliskich orków i gobliny.
 
 ### Kupcy
 W osadach kupcy jadą konnymi wozami z płóciennym zadaszeniem i towarem. Kursują między wioskami wzdłuż północno-południowych traktów, zatrzymują się na 8 sekund u celu i wracają. Poza wczytanym obszarem podróż jest wstrzymana, a pozycja zachowana do powrotu gracza. Są przyjaźni, a na minimapie mają złoty znacznik. Handel nie jest jeszcze dostępny.
@@ -112,7 +112,10 @@ Każda wioska ma dwie drewniane wieże przy północnym i południowym podejści
 Noc zaczyna się co 3 minuty aktywnej gry (3:00, 6:00, 9:00) i trwa minutę: 10 sekund zmierzchu, 40 sekund nocy i 10 sekund świtu. Pauza zatrzymuje cykl, restart wyprawy rozpoczyna nowy dzień. Niebieskie przyciemnienie obejmuje świat, a interfejs pozostaje czytelny.
 
 ### Nocne najazdy
-Podczas każdej nocy pobliskie wioski otrzymują jedną falę pięciu orków. Napastnicy podchodzą północnym traktem do centrum, atakują bohatera w zasięgu i są ostrzeliwani przez wieże. Nie niszczą jeszcze budynków ani nie walczą z mieszkańcami. Fala nie powiela się przy ponownym wczytaniu osady; kolejna noc przynosi kolejną piątkę. Najazdy odległych, niewczytanych osad nie są symulowane.
+Podczas każdej nocy pobliskie wioski otrzymują jedną falę trzynastu orków. Napastnicy podchodzą północnym traktem do centrum, atakują bohatera w zasięgu i są ostrzeliwani przez wieże. Nie niszczą jeszcze budynków ani nie walczą z mieszkańcami. Fala nie powiela się przy ponownym wczytaniu osady; kolejna noc przynosi kolejną trzynastkę. Najazdy odległych, niewczytanych osad nie są symulowane.
 
 ### Dodatkowe patrole
-Każda wioska ma po pięciu łuczników i włóczników, oprócz pięciu rycerzy. Łucznicy noszą zielone stroje i łuki, włócznicy stalowe hełmy oraz długie włócznie. Są przyjaźni, patrolują posterunki i nie powielają się po powrocie do osady. Podobnie jak rycerze nie prowadzą jeszcze walki; ostrzał zapewniają wieże.
+Każda wioska ma po pięciu łuczników i włóczników, oprócz pięciu rycerzy. Łucznicy noszą zielone stroje i łuki, włócznicy stalowe hełmy oraz długie włócznie. Są przyjaźni, patrolują posterunki i nie powielają się po powrocie do osady. Wspólnie z rycerzami walczą z pobliskimi orkami i goblinami.
+
+### Walczące patrole i gobliny
+Rycerze i włócznicy atakują pobliskich przeciwników wręcz, a łucznicy strzelają widocznymi strzałami. Po walce wracają na posterunki. W dziczy występują też mniejsze gobliny: mają 2 punkty zdrowia i są szybsze od orków. Wieże i żołnierze reagują na oba rodzaje przeciwników. Nocne fale liczą 13 orków.

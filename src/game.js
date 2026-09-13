@@ -1,7 +1,7 @@
 import {daylight,drawNight} from './day-night.js';
 import {drawFishingGear} from './countryside.js';
 import {healAtWell} from './healing.js';
-import {Population,drawPerson,drawCorpse} from './population.js?v=0.9.7';
+import {Population,drawPerson,drawCorpse} from './population.js?v=0.9.9';
 import {drawCastle} from './castles.js';
 import {drawScenery} from './scenery.js';
 import {drawSettlement,isSettlementObject} from './settlements.js?v=0.9.3';
@@ -64,7 +64,7 @@ for(let i=-4;i<=4;i++){const flame=5+Math.round(Math.sin(time*10+i*2)*2)+(4-Math
 rect(-1,-48,3,7,'#f0d275');
 for(const corpse of population.corpses)drawCorpse(ctx,corpse,time);
 const items=[...Array.from(population.actors.values(),a=>({y:a.y,draw:()=>drawPerson(ctx,a,time)})),...nearbyObjects.filter(o=>o.type!=='river-water').map(o=>({y:o.y,draw:()=>o.type.startsWith('castle-')?drawCastle(ctx,o,time):isSettlementObject(o)?(drawSettlement(ctx,o,time),o.fishing&&drawFishingGear(ctx,o)):drawScenery(ctx,o,hero)})),...dummies.map(o=>({y:o.y,draw:()=>dummy(o)})),{y:hero.y,draw:()=>{rect(hero.x-6,hero.y+5,13,3,'#293c2d');ctx.globalAlpha=time<hero.hurtUntil&&Math.floor(time*12)%2?.4:1;drawHero(ctx,hero.x,hero.y,hero.dir,hero.moving?1+(Math.floor(time*10)%2):0);ctx.globalAlpha=1;if(time<attackUntil){const progress=1-(attackUntil-time)/.23,a=angle()-1.2+progress*2.4;for(let i=0;i<10;i++){const aa=a-i*.075;rect(hero.x+Math.cos(aa)*20,hero.y+Math.sin(aa)*20,2,2,i<4?'#e7edcf':'#9dac98')}for(let i=7;i<20;i++)rect(hero.x+Math.cos(a)*i,hero.y+Math.sin(a)*i,2,2,'#dae1d4')}}}];items.sort((a,b)=>a.y-b.y).forEach(i=>i.draw());for(const p of particles){ctx.globalAlpha=Math.min(1,p.life*2);rect(p.x,p.y,2,2,p.color)}ctx.globalAlpha=1;
-population.towers.draw(ctx);
+population.towers.draw(ctx);population.guards.draw(ctx);
 ctx.restore();
 drawNight(ctx,W,H,time-dayStarted);
 drawMinimap();
@@ -83,7 +83,7 @@ function drawMinimap(){
   if(!['house','inn','stable','castle-keep','castle-tower','watchtower'].includes(o.type))continue;
   m.fillStyle=t.kind==='castle'?'#dcc389':'#94704b';m.fillRect(Math.round((o.x-left)/8)-2,Math.round((o.y-top)/8)-2,4,3);
  }
- for(const a of population.actors.values()){m.fillStyle=a.type==='orc'?'#d55d40':a.type==='merchant'?'#e1b75a':['knight','archer','spearman'].includes(a.type)?'#a4bfdc':'#cfcd94';m.fillRect(Math.round((a.x-left)/8),Math.round((a.y-top)/8),2,2)}
+ for(const a of population.actors.values()){m.fillStyle=['orc','goblin'].includes(a.type)?'#d55d40':a.type==='merchant'?'#e1b75a':['knight','archer','spearman'].includes(a.type)?'#a4bfdc':'#cfcd94';m.fillRect(Math.round((a.x-left)/8),Math.round((a.y-top)/8),2,2)}
  m.fillStyle='#151a14';m.fillRect(37,37,7,7);m.fillStyle='#8fb8df';m.fillRect(39,38,3,5);m.fillStyle='#f2efda';m.fillRect(38,39,5,2);
 }
 function frame(now){const dt=Math.min((now-last)/1000,1/30);last=now;if(!paused)update(dt);draw();requestAnimationFrame(frame)}
