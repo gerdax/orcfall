@@ -1,7 +1,7 @@
 import {spawnRaid} from './raids.js';
 import {TowerCombat} from './tower-combat.js';
 import {makeMerchant,updateMerchant,drawMerchant} from './merchants.js?v=0.9.2';
-import {villageKnights,drawKnight} from './knights.js';
+import {villageKnights,drawGuard} from './knights.js?v=0.9.7';
 import {hash} from './world.js?v=0.9.3';
 import {collides} from './geometry.js';
 import {moveActor} from './hero.js';
@@ -11,7 +11,7 @@ export class Population{
  sync(world,chunks){
   this.raidWorld=world;
   const present=new Set(chunks.map(c=>`${c.cx}:${c.cy}`));
-  for(const [id,a] of this.actors)if(!a.raid&&!['knight','merchant'].includes(a.type)&&!present.has(a.chunk)){this.actors.delete(id)}
+  for(const [id,a] of this.actors)if(!a.raid&&!['knight','archer','spearman','merchant'].includes(a.type)&&!present.has(a.chunk)){this.actors.delete(id)}
   for(const key of this.loaded)if(!present.has(key))this.loaded.delete(key);
   const obstacles=chunks.flatMap(c=>c.objects);
   const towns=new Map();
@@ -25,11 +25,14 @@ export class Population{
    if(towns.has(a.townId)||present.has(`${Math.floor(a.x/128)}:${Math.floor(a.y/128)}`))this.actors.set(a.id,a);
    else this.actors.delete(a.id);
   }
-  for(const [id,a] of this.actors)if(a.type==='knight'&&!towns.has(a.townId))this.actors.delete(id);
+  for(const [id,a] of this.actors)if(['knight','archer','spearman'].includes(a.type)&&!towns.has(a.townId))this.actors.delete(id);
   for(const town of towns.values())if(!this.actors.has(`${town.id}:merchant`)){let a=this.traders.get(town.id);if(!a){a=makeMerchant(town,world);if(a)this.traders.set(town.id,a)}if(a)this.actors.set(a.id,a)}
   for(const [id,a] of this.actors)if(a.type==='merchant'&&!towns.has(a.townId)&&!present.has(`${Math.floor(a.x/128)}:${Math.floor(a.y/128)}`))this.actors.delete(id);
   for(const a of this.traders.values())if(present.has(`${Math.floor(a.x/128)}:${Math.floor(a.y/128)}`))this.actors.set(a.id,a);
-  for(const town of towns.values())if(!this.actors.has(`${town.id}:knight:0`))for(const a of villageKnights(town))this.actors.set(a.id,{...a,patrolObstacles:town.objects});
+  for(const town of towns.values())for(const type of ['knight','archer','spearman'])if(!this.actors.has(`${town.id}:${type}:0`)){
+   const occupied=[...this.actors.values()].filter(a=>a.townId===town.id);
+   for(const a of villageKnights(town,type,occupied))this.actors.set(a.id,{...a,patrolObstacles:town.objects});
+  }
 
   for(const c of chunks){const key=`${c.cx}:${c.cy}`;if(this.loaded.has(key))continue;this.loaded.add(key);
    const town=world.townAt(c.x+64,c.y+64),human=!!town;
@@ -75,7 +78,7 @@ export class Population{
 }
 const HUMAN=['................','......oooo......','.....ohhhho.....','.....ohHHho.....','.....osssso.....','.....osSsso.....','......osso......','....ooccccoo....','...osccccccso...','...osccccccso...','....occcccco....','.....obbbbo.....','.....oboboo.....','.....oo.oo......','................','................'];
 const ORC=['................','.....oooooo.....','....ogGGGggo....','...ogGGGGGGgo...','...ogYgGGYggo...','....oggggggo....','....oWgggWo.....','...ootttttoo....','..ogotTTttogo...','..ogotttttogo...','...ootttttoo....','....obbbbbo.....','....obboobbo....','....ooo.ooo.....','................','................'];
-export function drawPerson(ctx,a,time){if(a.type==='merchant'){drawMerchant(ctx,a,time);return}if(a.type==='knight'){drawKnight(ctx,a,time);return}const orc=a.type==='orc',rows=orc?ORC:HUMAN,palette={o:'#17201b',h:'#593824',H:'#8f663c',s:'#c99568',S:'#e8b982',c:['#92764d','#806280','#668984'][a.variant],b:'#3a3024',g:'#486338',G:'#79914b',Y:'#e3c77b',W:'#ded3a4',t:'#483d2c',T:'#776044'};const x=Math.round(a.x)-8,y=Math.round(a.y)-8;ctx.fillStyle='#293c2d';ctx.fillRect(x+2,y+13,13,3);for(let r=0;r<16;r++)for(let c=0;c<16;c++){let p=rows[r][c];if(!palette[p])continue;if(a.dir==='up'&&r>3&&r<7)p=orc?'g':'h';ctx.fillStyle=time<a.flash?'#eee1bd':palette[p];const step=r>11&&a.moving?(Math.floor(time*7)%2?1:-1)*(c<8?1:-1):0;ctx.fillRect(x+c,y+r+step,1,1)}if(orc){ctx.fillStyle='#6e5840';ctx.fillRect(x+15,y+6,1,7);ctx.fillStyle='#a7ada0';ctx.fillRect(x+14,y+5,4,4);ctx.fillStyle='#182019';ctx.fillRect(x+2,y-5,13,3);ctx.fillStyle=a.windup>0?'#efb853':'#b44535';ctx.fillRect(x+3,y-4,Math.ceil(11*a.hp/3),1);if(a.windup>0){ctx.fillStyle='#efb853';ctx.fillRect(x+7,y-12,2,4);ctx.fillRect(x+7,y-7,2,1)}}}
+export function drawPerson(ctx,a,time){if(a.type==='merchant'){drawMerchant(ctx,a,time);return}if(['knight','archer','spearman'].includes(a.type)){drawGuard(ctx,a,time);return}const orc=a.type==='orc',rows=orc?ORC:HUMAN,palette={o:'#17201b',h:'#593824',H:'#8f663c',s:'#c99568',S:'#e8b982',c:['#92764d','#806280','#668984'][a.variant],b:'#3a3024',g:'#486338',G:'#79914b',Y:'#e3c77b',W:'#ded3a4',t:'#483d2c',T:'#776044'};const x=Math.round(a.x)-8,y=Math.round(a.y)-8;ctx.fillStyle='#293c2d';ctx.fillRect(x+2,y+13,13,3);for(let r=0;r<16;r++)for(let c=0;c<16;c++){let p=rows[r][c];if(!palette[p])continue;if(a.dir==='up'&&r>3&&r<7)p=orc?'g':'h';ctx.fillStyle=time<a.flash?'#eee1bd':palette[p];const step=r>11&&a.moving?(Math.floor(time*7)%2?1:-1)*(c<8?1:-1):0;ctx.fillRect(x+c,y+r+step,1,1)}if(orc){ctx.fillStyle='#6e5840';ctx.fillRect(x+15,y+6,1,7);ctx.fillStyle='#a7ada0';ctx.fillRect(x+14,y+5,4,4);ctx.fillStyle='#182019';ctx.fillRect(x+2,y-5,13,3);ctx.fillStyle=a.windup>0?'#efb853':'#b44535';ctx.fillRect(x+3,y-4,Math.ceil(11*a.hp/3),1);if(a.windup>0){ctx.fillStyle='#efb853';ctx.fillRect(x+7,y-12,2,4);ctx.fillRect(x+7,y-7,2,1)}}}
 
 // A flattened, sideways sprite, with a dropped axe, on the same pixel grid.
 export function drawCorpse(ctx,a,time){

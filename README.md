@@ -113,3 +113,6 @@ Noc zaczyna się co 3 minuty aktywnej gry (3:00, 6:00, 9:00) i trwa minutę: 10 
 
 ### Nocne najazdy
 Podczas każdej nocy pobliskie wioski otrzymują jedną falę pięciu orków. Napastnicy podchodzą północnym traktem do centrum, atakują bohatera w zasięgu i są ostrzeliwani przez wieże. Nie niszczą jeszcze budynków ani nie walczą z mieszkańcami. Fala nie powiela się przy ponownym wczytaniu osady; kolejna noc przynosi kolejną piątkę. Najazdy odległych, niewczytanych osad nie są symulowane.
+
+### Dodatkowe patrole
+Każda wioska ma po pięciu łuczników i włóczników, oprócz pięciu rycerzy. Łucznicy noszą zielone stroje i łuki, włócznicy stalowe hełmy oraz długie włócznie. Są przyjaźni, patrolują posterunki i nie powielają się po powrocie do osady. Podobnie jak rycerze nie prowadzą jeszcze walki; ostrzał zapewniają wieże.
