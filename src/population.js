@@ -2,7 +2,7 @@ import {enemyXP} from './progression.js';
 import {makeFisherman,drawFisherman} from './fishermen.js';
 import {drawChief} from './camps.js?v=0.10.2';
 import {GuardCombat,isGuard} from './guard-combat.js';
-import {spawnRaid} from './raids.js?v=0.9.9';
+import {spawnRaid} from './raids.js?v=0.13.0';
 import {TowerCombat} from './tower-combat.js?v=0.9.9';
 import {makeMerchant,updateMerchant,drawMerchant} from './merchants.js?v=0.9.2';
 import {villageKnights,drawGuard} from './knights.js?v=0.9.8';

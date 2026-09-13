@@ -12,11 +12,11 @@ test('only large villages are fortified; four roads cross gates and logs block m
   assert.equal(!!walls.length,t.objects.filter(o=>o.type==='house').length>=7);
   if(!walls.length)continue;count++;
   for(const horizontal of [true,false])for(const sign of [-1,1]){
-   const fixed=sign*248;let best=Infinity,center=0;
+   const edge=t.kind==='city'?368:248,fixed=sign*edge;let best=Infinity,center=0;
    for(let n=-180;n<=180;n++){const d=w.pathDistance(t.x+(horizontal?n:fixed),t.y+(horizontal?fixed:n));if(d<best){best=d;center=n}}
-   const a={x:t.x+(horizontal?center:sign*220),y:t.y+(horizontal?sign*220:center)};
+   const a={x:t.x+(horizontal?center:sign*(edge-28)),y:t.y+(horizontal?sign*(edge-28):center)};
    moveActor(a,horizontal?0:sign,horizontal?sign:0,1,walls,null,null,56);
-   assert.ok(Math.abs((horizontal?a.y-t.y:a.x-t.x))>270,'gate must be passable');
+   assert.ok(Math.abs((horizontal?a.y-t.y:a.x-t.x))>edge+22,'gate must be passable');
   }
   assert.ok(walls.some(o=>collides(o.x,o.y,o)));
   const streamed=w.region(t.x-280,t.y-280,t.x+280,t.y+280).flatMap(c=>c.objects).filter(o=>o.type.startsWith('palisade'));

@@ -6,7 +6,7 @@ test('rare cities are larger, fortified and reproducible; start is always a city
  assert.equal(w.getTown(0,0).kind,'city');
  for(let x=-8;x<=8;x++)for(let y=-8;y<=8;y++){
   const t=w.getTown(x,y);if(!t)continue;total++;
-  if(t.kind==='city'){cities++;assert.ok(t.objects.filter(o=>o.type==='house').length>=10);assert.ok(t.fortified);assert.ok(t.courtyards.some(c=>c.x===0&&c.y===0));assert.deepEqual(t,new World().getTown(x,y))}
+  if(t.kind==='city'){cities++;assert.ok(t.objects.filter(o=>o.type==='house').length>=18);assert.equal(t.radius,380);assert.ok(t.fortified);assert.ok(t.courtyards.some(c=>c.x===0&&c.y===0));assert.deepEqual(t,new World().getTown(x,y))}
  }
  assert.ok(cities>0&&cities/total<.15);
 });

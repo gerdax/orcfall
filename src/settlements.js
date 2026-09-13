@@ -13,7 +13,7 @@ export function makeTown(gx,gy,x,y,seed,city=false){
  const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296};
  const layout=Math.floor(random()*3),objects=[],lanes=[],courtyards=[],reservations=[];
  const add=(type,dx,dy,w,h,extra={})=>{const o={type,x:x+Math.round(dx),y:y+Math.round(dy),w,h,...extra};objects.push(o);return o};
- const clear=(dx,dy,w,h)=>Math.abs(dx)-w/2>26&&Math.abs(dy)-h/2>26&&Math.abs(dx)+w/2<238&&Math.abs(dy)+h/2<238&&!reservations.some(o=>Math.abs(dx-o.x)<(w+o.w)/2+16&&Math.abs(dy-o.y)<(h+o.h)/2+16);
+ const clear=(dx,dy,w,h)=>Math.abs(dx)-w/2>26&&Math.abs(dy)-h/2>26&&Math.abs(dx)+w/2<(city?350:238)&&Math.abs(dy)+h/2<(city?350:238)&&(!city||((Math.abs(dy)<180||Math.abs(dx)-w/2>135)&&(Math.abs(dx)<180||Math.abs(dy)-h/2>135)))&&!reservations.some(o=>Math.abs(dx-o.x)<(w+o.w)/2+16&&Math.abs(dy-o.y)<(h+o.h)/2+16);
  const place=(type,dx,dy,sw,sh,angle)=>{
   const bounds=rotatedBounds(sw,sh,angle);
   if(!clear(dx,dy,bounds.w,bounds.h))return null;
@@ -31,13 +31,14 @@ export function makeTown(gx,gy,x,y,seed,city=false){
  const gate={x:x+Math.round(left-8),y:y+Math.round(top+24)};
  const clusters=[{x:-115,y:111},{x:116,y:112},{x:-135,y:-149}];
  if(layout===1)courtyards.push(...clusters.slice(0,2).map(c=>({...c,r:21})));
- const target=city?12:5+Math.floor(random()*4);
+ const target=city?22:5+Math.floor(random()*4);
  let houses=0;
- for(let attempt=0;attempt<(city?1600:400)&&houses<target;attempt++){
+ for(let attempt=0;attempt<(city?5000:400)&&houses<target;attempt++){
   let dx,dy;
   if(layout===0){dx=(random()>.5?1:-1)*(63+random()*74);dy=-195+random()*390}
   else if(layout===1){const c=clusters[attempt%3],a=random()*Math.PI*2,r=48+random()*20;dx=c.x+Math.cos(a)*r;dy=c.y+Math.sin(a)*r}
   else{const c=clusters[attempt%3];dx=c.x+(random()-.5)*140;dy=c.y+(random()-.5)*145}
+  if(city){dx*=1.55;dy*=1.55;if(attempt>500){dx=(random()-.5)*640;dy=(random()-.5)*640}}
   dx=Math.round(dx);dy=Math.round(dy);
   const sw=city?30:30+Math.floor(random()*9)*2,sh=city?24:24+Math.floor(random()*6)*2;
   let tx=0,ty=0;
@@ -52,7 +53,7 @@ export function makeTown(gx,gy,x,y,seed,city=false){
  add('well',27,25,12,12,{label:'Studnia'});add('sign',-20,32,5,5,{label:name});
  // Route to actual oriented doors, avoiding all walls and fences.
  const targets=objects.filter(o=>o.sourceW).map(o=>buildingDoor(o));targets.push(gate);
- const step=4,limit=260,side=limit*2/step+1,total=side*side;
+ const step=4,limit=city?380:260,side=limit*2/step+1,total=side*side;
  const parent=new Int32Array(total).fill(-1),queue=new Int32Array(total);
  const key=(ix,iy)=>iy*side+ix,start=(side*side-1)/2;parent[start]=start;queue[0]=start;
  let end=1;
@@ -74,7 +75,7 @@ export function makeTown(gx,gy,x,y,seed,city=false){
   for(let i=0;i<points.length-1;){let j=i+1;const dx=points[j].x-points[i].x,dy=points[j].y-points[i].y;while(j+1<points.length&&points[j+1].x-points[j].x===dx&&points[j+1].y-points[j].y===dy)j++;lanes.push({ax:points[i].x,ay:points[i].y,bx:points[j].x,by:points[j].y});i=j}
  }
  if(city){courtyards.push({x:0,y:0,r:36});add('crate',-25,-20,12,12);add('barrel',25,-20,8,10)}
- return {id:`${gx}:${gy}`,x,y,name,layout,lanes,courtyards,objects,...(city?{kind:'city'}:{})};
+ return {id:`${gx}:${gy}`,x,y,name,layout,lanes,courtyards,objects,...(city?{kind:'city',radius:380}:{})};
 }
 function drawSettlementShape(ctx,o,time=0){
  const x=Math.round(o.x),y=Math.round(o.y);

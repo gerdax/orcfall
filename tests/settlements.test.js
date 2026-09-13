@@ -6,7 +6,7 @@ import {buildingDoor,collides} from '../src/geometry.js';
 import {moveActor} from '../src/hero.js';
 
 test('towns contain houses, inn, stable, well and gated fences, without duplicated chunk objects',()=>{
- const w=new World(8431),t=w.getTown(0,0),chunks=w.region(-256,-256,256,256);
+ const w=new World(8431),t=w.getTown(0,0),chunks=w.region(-384,-384,384,384);
  for(const type of ['house','inn','stable','well','fence','horse'])assert.ok(t.objects.some(o=>o.type===type));
  const objects=chunks.flatMap(c=>c.objects).filter(o=>!['tree','rock'].includes(o.type));
  assert.equal(objects.length,t.objects.length);
@@ -37,7 +37,7 @@ test('many seeds give distinct layouts with reachable doors and no overlapping b
  const layouts=new Set(),signatures=new Set();
  for(let seed=1;seed<=30;seed++){
   const w=new World(seed),t=w.getTown(0,0),buildings=t.objects.filter(o=>['house','inn','stable'].includes(o.type));
-  assert.ok(buildings.length>=12&&buildings.length<=14);
+  assert.ok(buildings.length>=18&&buildings.length<=24);
   assert.ok(new Set(buildings.map(o=>o.angle)).size>=3);
   assert.ok(buildings.some(o=>o.angle%90!==0));
   layouts.add(t.layout);signatures.add(buildings.map(o=>`${o.x},${o.y},${o.w}`).join('|'));
@@ -48,7 +48,7 @@ test('many seeds give distinct layouts with reachable doors and no overlapping b
   for(let i=0;i<queue.length;i++){
    const [x,y]=queue[i];for(const [dx,dy] of [[4,0],[-4,0],[0,4],[0,-4]]){
     const nx=x+dx,ny=y+dy,key=`${nx},${ny}`;
-    if(Math.abs(nx)>260||Math.abs(ny)>260||seen.has(key)||!legal(nx,ny))continue;
+    if(Math.abs(nx)>380||Math.abs(ny)>380||seen.has(key)||!legal(nx,ny))continue;
     seen.add(key);queue.push([nx,ny]);
    }
   }

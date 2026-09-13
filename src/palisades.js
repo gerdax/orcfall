@@ -2,7 +2,7 @@
 export function addPalisade(town,warp){
  if(town.kind==='castle'||town.objects.filter(o=>o.type==='house').length<7)return;
  town.fortified=true;
- const edge=248,blend=.896,gap=56;
+ const edge=town.kind==='city'?368:248,blend=town.kind==='city'?1:.896,gap=56;
  for(const side of [-1,1])for(const horizontal of [true,false]){
   const offset=side*edge;
   const center=Math.round(horizontal?

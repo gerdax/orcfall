@@ -1,10 +1,10 @@
 import {addChiefTower} from './chief-tower.js';
 import {campsIn,campObjects,campResidents} from './camps.js?v=0.10.2';
 import {addWatchtowers} from './watchtowers.js';
-import {addPalisade} from './palisades.js?v=0.8.1';
+import {addPalisade} from './palisades.js?v=0.13.0';
 import {riverGround,fishingHuts,fieldAt} from './countryside.js';
 import {makeCastle,CASTLE_CHANCE} from './castles.js';
-import {makeTown,TOWN_SPACING} from './settlements.js?v=0.12.0';
+import {makeTown,TOWN_SPACING} from './settlements.js?v=0.13.0';
 // All generation depends only on global coordinates and the world seed.
 // Chunk order, cache eviction and exploration history cannot change terrain.
 export const CHUNK_SIZE = 128;
@@ -57,14 +57,14 @@ export class World {
   }
   townAt(x,y){
     const t=this.getTown(Math.round(x/TOWN_SPACING),Math.round(y/TOWN_SPACING));
-    return t&&Math.max(Math.abs(x-t.x),Math.abs(y-t.y))<260?t:null;
+    return t&&Math.max(Math.abs(x-t.x),Math.abs(y-t.y))<(t.radius??260)?t:null;
   }
   townsIn(left,top,right,bottom){
     const result=[];
-    for(let gy=Math.floor((top-300)/TOWN_SPACING);gy<=Math.ceil((bottom+300)/TOWN_SPACING);gy++)
-      for(let gx=Math.floor((left-300)/TOWN_SPACING);gx<=Math.ceil((right+300)/TOWN_SPACING);gx++){
+    for(let gy=Math.floor((top-420)/TOWN_SPACING);gy<=Math.ceil((bottom+420)/TOWN_SPACING);gy++)
+      for(let gx=Math.floor((left-420)/TOWN_SPACING);gx<=Math.ceil((right+420)/TOWN_SPACING);gx++){
         const t=this.getTown(gx,gy);
-        if(t&&t.x+260>=left&&t.x-260<=right&&t.y+260>=top&&t.y-260<=bottom)result.push(t);
+        if(t&&t.x+(t.radius??260)>=left&&t.x-(t.radius??260)<=right&&t.y+(t.radius??260)>=top&&t.y-(t.radius??260)<=bottom)result.push(t);
       }
     return result;
   }
